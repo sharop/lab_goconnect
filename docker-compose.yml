@@ -1,0 +1,105 @@
+version: "3.9"
+#https://docs.min.io/docs/deploy-minio-on-docker-compose.html
+#https://hub.docker.com/r/bitnami/minio/
+# Settings and configurations that are common for all containers
+x-minio-common: &minio-common
+  image: quay.io/minio/minio:RELEASE.2021-10-13T00-23-17Z
+  command: server --console-address ":9001" http://minio{1...4}/data{1...2}
+  expose:
+    - "9000"
+    - "9001"
+  environment:
+    MINIO_ROOT_USER: minio
+    MINIO_ROOT_PASSWORD: minio123
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+    interval: 30s
+    timeout: 20s
+    retries: 3
+
+services:
+  minio1:
+    <<: *minio-common
+    hostname: minio1
+    volumes:
+      - data1-1:/data1
+      - data1-2:/data2
+
+  minio2:
+    <<: *minio-common
+    hostname: minio2
+    volumes:
+      - data2-1:/data1
+      - data2-2:/data2
+
+  minio3:
+    <<: *minio-common
+    hostname: minio3
+    volumes:
+      - data3-1:/data1
+      - data3-2:/data2
+
+  minio4:
+    <<: *minio-common
+    hostname: minio4
+    volumes:
+      - data4-1:/data1
+      - data4-2:/data2
+
+  nginx:
+    image: nginx:1.19.2-alpine
+    hostname: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    depends_on:
+      - minio1
+      - minio2
+      - minio3
+      - minio4
+
+###https://kb.objectrocket.com/cockroachdb/docker-compose-and-cockroachdb-1151
+  node_1:
+    container_name: node_1
+    image: cockroachdb/cockroach:latest
+    volumes:
+      - ./data/node_1:/cockroach/cockroach-data
+    command: start --insecure --join=node_1,node_2
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+    networks:
+      default:
+        aliases:
+          - node_1
+
+
+  node_2:
+    container_name: node_2
+    image: cockroachdb/cockroach:latest
+    volumes:
+      - ./data/node_2:/cockroach/cockroach-data
+    command: start --insecure --join=node_1
+    networks:
+      default:
+        aliases:
+          - node_2
+
+networks:
+  default:
+    external: true
+    name: datos-capital-net
+
+## By default this config uses default local driver,
+## For custom volumes replace with volume driver configuration.
+volumes:
+  data1-1:
+  data1-2:
+  data2-1:
+  data2-2:
+  data3-1:
+  data3-2:
+  data4-1:
+  data4-2:

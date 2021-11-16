@@ -1,0 +1,16 @@
+{
+  "CN": "X CORP",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "MX",
+      "L": "DF",
+      "ST": "Mexico City",
+      "O": "SERCH-I/O",
+      "OU": "CA Services"
+    }
+  ]
+}

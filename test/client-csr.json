@@ -1,9 +1,6 @@
 {
-  "CN": "127.0.0.1",
-  "hosts": [
-    "localhost",
-    "127.0.0.1"
-  ],
+  "CN": "client",
+  "hosts": [""],
   "key": {
     "algo": "rsa",
     "size": 2048
@@ -13,8 +10,8 @@
       "C": "MX",
       "L": "DF",
       "ST": "Mexico City",
-      "O": "SERG-I/O",
-      "OU": "CA Services"
+      "O": "SERCH-I/O",
+      "OU": "Distributed Services"
     }
   ]
 }

@@ -9,7 +9,7 @@ type httpServer struct{
 	Log *Log
 }
 
-func newHTTPServer() *httpServer{
+func newHTTPServer() *httpServer {
 	return &httpServer{
 		Log: NewLog(),
 	}

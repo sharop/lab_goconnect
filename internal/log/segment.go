@@ -10,10 +10,10 @@ import (
 )
 
 type segment struct {
-	store *store
-	index *index
+	store                     *store
+	index                     *index
 	baseOffset,	nextOffset uint64
-	config Config
+	config                    Config
 }
 
 func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {

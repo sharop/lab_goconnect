@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	api "github.com/sharop/lab_goconnect/api/v1"
 	"io"
 	"io/ioutil"
@@ -15,8 +14,8 @@ import (
 
 type Log struct {
 	mu sync.RWMutex
-	Dir string
-	Config Config
+	Dir           string
+	Config        Config
 	activeSegment *segment
 	segments      []*segment
 }
@@ -97,7 +96,7 @@ func (l *Log) Read(off uint64) (*api.Record, error) {
 		}
 	}
 	if s == nil || s.nextOffset <= off {
-		return nil, fmt.Errorf("offset out of range: %d", off)
+		return nil, api.ErrOffsetOutOfRange{Offset: off} //fmt.Errorf("offset out of range: %d", off)
 	}
 	return s.Read(off)
 }

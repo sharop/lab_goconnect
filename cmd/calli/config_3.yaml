@@ -1,0 +1,8 @@
+data-dir: data3
+rpc-port: 12500
+bind-addr: "localhost:12501"
+bootstrap: false
+start-join-addrs: "127.0.0.1:10501"
+node-name: 2
+
+

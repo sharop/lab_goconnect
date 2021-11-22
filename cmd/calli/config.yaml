@@ -1,0 +1,5 @@
+data-dir: data
+rpc-port: 10500
+bind-addr: "127.0.0.1:10501"
+bootstrap: true 
+node-name: 0

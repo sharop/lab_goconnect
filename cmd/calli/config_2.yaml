@@ -1,0 +1,7 @@
+data-dir: data2
+rpc-port: 11500
+bind-addr: "127.0.0.1:11501"
+bootstrap: false 
+start-join-addrs: "127.0.0.1:10501"
+node-name: 1
+

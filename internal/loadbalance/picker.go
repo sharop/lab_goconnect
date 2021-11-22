@@ -1,11 +1,13 @@
 package loadbalance
 
 import (
-	"google.golang.org/grpc/balancer"
-	"google.golang.org/grpc/balancer/base"
 	"strings"
 	"sync"
 	"sync/atomic"
+
+	"google.golang.org/grpc/balancer"
+	"google.golang.org/grpc/balancer/base"
+
 )
 
 // En una arquitectura GRPC, los Pickers manejan la logica de balanceo
@@ -20,7 +22,6 @@ type Picker struct{
 	followers	[]balancer.SubConn
 	current		uint64
 }
-
 
 func (p *Picker) Build(info base.PickerBuildInfo) balancer.Picker {
 	p.mu.Lock()
@@ -69,5 +70,7 @@ func (p *Picker) nextFollower() balancer.SubConn {
 }
 
 func init(){
-	balancer.Register(base.NewBalancerBuilder(Name, &Picker{}, base.Config{}))
+	balancer.Register(
+		base.NewBalancerBuilder(Name, &Picker{}, base.Config{}),
+	)
 }

@@ -93,7 +93,7 @@ type clientConn struct {
 	resolver.ClientConn
 	state resolver.State
 }
-func (c *clientConn) UpdateState(state resolver.State) error {
+func (c *clientConn) UpdateState(state resolver.State) error  {
 	c.state = state
 	return nil
 }

@@ -3,13 +3,16 @@ package loadbalance
 import (
 	"context"
 	"fmt"
-	api "github.com/sharop/lab_goconnect/api/v1"
+	"strings"
+	"sync"
+
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/attributes"
 	"google.golang.org/grpc/resolver"
 	"google.golang.org/grpc/serviceconfig"
-	"sync"
+
+	api "github.com/sharop/lab_goconnect/api/v1"
 )
 
 type Resolver struct {
@@ -39,8 +42,16 @@ func (r *Resolver) Build(
 	r.serviceConfig = r.clientConn.ParseServiceConfig(
 		fmt.Sprintf(`{"loadBalancingConfig":[{"%s":{}}]}`, Name),
 	)
+
+	var urlClean string
+	if strings.Contains(target.URL.Path,"/"){
+		urlClean = target.URL.Path[1:]
+	}else{
+		urlClean = target.URL.Path
+	}
+
 	var err error
-	r.resolverConn, err = grpc.Dial(target.URL.Path, dialOpts...)
+	r.resolverConn, err = grpc.Dial(urlClean, dialOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +59,7 @@ func (r *Resolver) Build(
 	return r, nil
 }
 
-const Name = "proglog"
+const Name = "calli"
 
 func (r *Resolver) Scheme() string {
 	return Name
@@ -85,17 +96,11 @@ func (r *Resolver) ResolveNow(resolver.ResolveNowOptions) {
 			),
 		})
 	}
-	err = r.clientConn.UpdateState(resolver.State{
+	r.clientConn.UpdateState(resolver.State{
 		Addresses:     addrs,
 		ServiceConfig: r.serviceConfig,
 	})
-	if err != nil{
-		r.logger.Error(
-			"Error updating state.",
-			zap.Error(err),
-		)
-		return
-	}
+
 }
 
 func (r *Resolver) Close() {

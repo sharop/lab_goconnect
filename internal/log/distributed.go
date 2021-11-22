@@ -9,6 +9,7 @@ import (
 	api "github.com/sharop/lab_goconnect/api/v1"
 	"google.golang.org/protobuf/proto"
 	"io"
+	"log"
 	"net"
 	"os"
 	"path/filepath"
@@ -60,6 +61,7 @@ func (l *DistributedLog) setupRaft(dataDir string) error {
 	logConfig.Segment.InitialOffset = 1
 	//Use store for something that I don't understand
 	// Configure to initialize in offset 1.
+	log.Print("Setup Rafts")
 	logStore, err := newLogStore(logDir,logConfig)
 	if err != nil{
 		return err
@@ -133,11 +135,12 @@ func (l *DistributedLog) setupRaft(dataDir string) error {
 	if err != nil {
 		return err
 	}
+
 	if l.config.Raft.Bootstrap && !hasState {
 		config := raft.Configuration{
 			Servers: []raft.Server{{
 				ID:      config.LocalID,
-				Address: transport.LocalAddr(),
+				Address: raft.ServerAddress(l.config.Raft.BindAddr), //transport.LocalAddr(),
 			}},
 		}
 		err = l.raft.BootstrapCluster(config).Error()
@@ -210,7 +213,8 @@ func (l *DistributedLog) Join(id, addr string) error {
 	for _, srv := range configFuture.Configuration().Servers {
 		if srv.ID == serverID || srv.Address == serverAddr {
 			if srv.ID == serverID && srv.Address == serverAddr {
-				return nil // we already know this server.
+				// we already know this server.
+				return nil
 			}
 			removeFuture := l.raft.RemoveServer(serverID, 0, 0)
 			if err := removeFuture.Error(); err != nil {

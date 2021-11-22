@@ -1,4 +1,4 @@
-CONFIG_PATH=${HOME}/.lab_goconnect/
+CONFIG_PATH=${HOME}/.calli/
 
 .PHONY: init
 init:
@@ -50,3 +50,9 @@ compile:
 			--go_opt=paths=source_relative \
 			--go-grpc_opt=paths=source_relative \
 			--proto_path=.
+
+
+TAG ?= 0.0.1
+##Add image with tag
+build-docker:
+	docker build -t github.com/sharop/calli:$(TAG) .

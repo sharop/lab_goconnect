@@ -5,7 +5,9 @@ package log.v1;
 option go_package = "github.com/sharop/api/log_v1";
 
 service Log{
+  //Unary call
   rpc Produce(ProduceRequest) returns (ProduceResponse){}
+  //Unary call
   rpc Consume(ConsumeRequest) returns (ConsumeResponse){}
   rpc ConsumeStream(ConsumeRequest) returns (stream ConsumeResponse){}
   rpc ProduceStream(stream ProduceRequest) returns (stream ProduceResponse) {}

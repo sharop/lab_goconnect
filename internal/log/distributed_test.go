@@ -2,8 +2,6 @@ package log_test
 
 import (
 	"fmt"
-	api "github.com/sharop/lab_goconnect/api/v1"
-	"github.com/sharop/lab_goconnect/internal/log"
 	"io/ioutil"
 	"net"
 	"os"
@@ -12,9 +10,10 @@ import (
 	"time"
 
 	"github.com/hashicorp/raft"
+	api "github.com/sharop/lab_goconnect/api/v1"
+	"github.com/sharop/lab_goconnect/internal/log"
 	"github.com/stretchr/testify/require"
 	"github.com/travisjeffery/go-dynaport"
-
 )
 
 func TestMultipleNodes(t *testing.T) {
@@ -39,6 +38,8 @@ func TestMultipleNodes(t *testing.T) {
 		config.Raft.ElectionTimeout = 50 * time.Millisecond
 		config.Raft.LeaderLeaseTimeout = 50 * time.Millisecond
 		config.Raft.CommitTimeout = 5 * time.Millisecond
+		config.Raft.BindAddr = ln.Addr().String()
+
 
 
 		if i == 0 {

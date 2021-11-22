@@ -21,3 +21,4 @@
 /api/v1/log_grpc.pb.go
 /docker-compose.yml
 /nginx.conf
+/deploy/

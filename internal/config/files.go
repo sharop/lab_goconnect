@@ -28,6 +28,6 @@ func configFile(filename string) string {
 	if err != nil {
 		panic(err)
 	}
-	return filepath.Join(homeDir, ".lab_goconnect", filename)
+	return filepath.Join(homeDir, ".calli", filename)
 }
 
